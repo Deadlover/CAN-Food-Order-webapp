@@ -1,0 +1,58 @@
+{% extends 'home/home.html' %}
+ 
+{% block nav %}
+<nav class="flex justify-evenly p-4 bg-transparent togglable nav-hover-dark max-sm:hidden">
+{% endblock %}
+
+{% block all_content %}
+
+<div class=" min-h-screen flex flex-col items-center mt-48 max-sm:text-sm">
+    <a href="{% url 'categoryupload' %}" class="border-2 border-yellow-300 bg-white px-6 py-2 hover:bg-yellow-400 hover:text-white" >Add Category</a>
+    <a href="{% url 'foodupload' %}" class="border-2 border-yellow-300 bg-white px-6 py-2 hover:bg-yellow-400 hover:text-white mt-24" >Add Fooditem</a>
+</div>
+{% endblock %}
+
+{% block javascript %} 
+<script>
+    const dropbutton = document.querySelector('#user-menu-button');
+  dropbutton.addEventListener('click', function () {
+    const dropdown = document.querySelector('#user-dropdown');
+    if (dropdown.style.display === "none" || dropdown.style.display === "") {
+      dropdown.style.display = "block";
+    } else {
+      dropdown.style.display = "none";
+    }
+  });
+
+  function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    document.getElementById("hamburger").addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      if (hamm.style.display === "none" || hamm.style.display === "") {
+        hamm.style.display = "block";
+      } else {
+        hamm.style.display = "none";
+      }
+      event.stopPropagation(); // Prevent click from immediately bubbling to document
+    });
+
+    // Hide 'hamm' when clicking outside
+    document.addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      var clickedElement = event.target; // The element that was clicked
+
+      // Check if the clicked element is not the hamburger and not the hamm
+      if (!clickedElement.closest('#hamburger') && !clickedElement.closest('#hamm')) {
+        hamm.style.display = "none";
+      }
+    });
+
+</script>
+{% endblock %}

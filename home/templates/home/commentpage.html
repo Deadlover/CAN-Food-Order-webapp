@@ -1,0 +1,137 @@
+{% extends 'home/cart.html' %}
+
+{% block all_content %}
+<section class="min-h-screen flex my-20 justify-around max-sm:text-sm max-sm:flex-col-reverse">
+    <section class="w-full ml-5 max-sm:mx-0">
+        <h1 class="text-2xl text-center text-bold mt-6 max-sm:text-sm">Contacted Message</h1>
+        <div>
+            <div>
+                <table class="table-auto w-full shadow-lg max-sm:text-sm">
+    
+                    <tr class="shadow-md hover:bg-yellow-400">
+                        <th class="text-center p-4 max-sm:p-1 "><span class="text-indigo-800"> Full name</span></th>
+                        <th class="text-center p-4 max-sm:p-1"><span class="text-"> E-mail address</span></th>
+                        <th class="text-center p-4 max-sm:p-1"><span>Subject</span></th>
+                        <th class="text-center p-4 max-sm:p-1"><span>Message</span></th>
+                    </tr>
+    
+                    <tr class="shadow hover:bg-green-300">
+                        <td class="font-bold text-center p-4 max-sm:p-1"></td>
+                        <td class="text-center p-4 max-sm:p-1"></td>
+                        <td class="text-center p-4 max-sm:p-1">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+    
+        </div>
+    </section>
+
+    <section class="w-full mx-5 max-sm:mx-0">
+        <h1 class="text-2xl text-center text-bold mt-2 max-sm:text-sm">Table Summary of food</h1>
+
+        <div>
+            <table class="table-auto w-full shadow-lg max-sm:text-sm">
+
+                <tr class="shadow-md hover:bg-yellow-400">
+                    <th class="text-center p-4 max-sm:p-1"><span class="text-indigo-800"> Food Name</span></th>
+                    <th class="text-center p-4 max-sm:p-1"><span class="text-"> Total Score</span></th>
+                    <th class="text-center p-4 max-sm:p-1"><span>Evaluations</span></th>
+                </tr>
+
+                {% for review in food %}
+                <tr class="shadow hover:bg-green-300">
+                    <td class="font-bold text-center p-4 max-sm:p-1">{{review.Name}}</td>
+                    <td class="text-center p-4 max-sm:p-1">{{review.average_rating}}</td>
+                    <td class="text-center p-4 max-sm:p-1">
+                        {% if review.average_rating > 1 and review.average_rating < 2 %}
+                            Poor
+                        {% endif %}
+
+                        {% if review.average_rating >= 2 and review.average_rating < 3 %}
+                            Fair
+                        {% endif %}
+                    
+                        {% if review.average_rating >= 3 and review.average_rating < 4 %}
+                            Good
+                        {% endif %}
+                    
+                        {% if review.average_rating >= 4 and review.average_rating <= 5 %}
+                            Very Good
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="">
+            <h1 class="text-2xl text-center text-bold mt-6 max-sm:text-sm">Review of Customer</h1>
+
+            <table class="table-auto w-full shadow-lg max-sm:text-sm">
+                <tr class="shadow-md hover:bg-yellow-400">
+                    <th class="text-center p-4 max-sm:p-1"><span class="text-indigo-800"> User</span></th>
+                    <th class="text-center p-4 max-sm:p-1"><span class="text-indigo-800"> Food Name</span></th>
+                    <th class="text-center p-4 max-sm:p-1"><span class="text-"> Comment</span></th>
+                    <th class="text-center p-4 max-sm:p-1"><span>Rated</span></th>
+                </tr>
+
+                {% for review in rating %}
+                <tr class="shadow hover:bg-green-300">
+                    <td class="font-bold text-center p-4 max-sm:p-1">{{review.user.first_name}}</td>
+                    <td class=" text-center p-4 max-sm:p-1">{{review.food_item.Name}}</td>
+                    <td class="text-center p-4 max-sm:p-1">{{review.review}}</td>
+                    <td class="text-center p-4 max-sm:p-1">{{review.score}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
+
+</section>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const dropbutton = document.querySelector('#user-menu-button');
+  dropbutton.addEventListener('click', function () {
+    const dropdown = document.querySelector('#user-dropdown');
+    if (dropdown.style.display === "none" || dropdown.style.display === "") {
+      dropdown.style.display = "block";
+    } else {
+      dropdown.style.display = "none";
+    }
+  });
+
+  function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    document.getElementById("hamburger").addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      if (hamm.style.display === "none" || hamm.style.display === "") {
+        hamm.style.display = "block";
+      } else {
+        hamm.style.display = "none";
+      }
+      event.stopPropagation(); // Prevent click from immediately bubbling to document
+    });
+
+    // Hide 'hamm' when clicking outside
+    document.addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      var clickedElement = event.target; // The element that was clicked
+
+      // Check if the clicked element is not the hamburger and not the hamm
+      if (!clickedElement.closest('#hamburger') && !clickedElement.closest('#hamm')) {
+        hamm.style.display = "none";
+      }
+    });
+
+</script>
+{% endblock %}

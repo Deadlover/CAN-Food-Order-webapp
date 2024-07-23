@@ -1,0 +1,118 @@
+{% extends 'home/home.html' %}
+
+{% block nav %}
+<nav class="flex justify-evenly p-4 bg-transparent togglable nav-hover-dark max-sm:hidden">
+    {% endblock %}
+
+    {% block img %}
+    <div class="back-1"></div>
+    {% endblock %}
+
+
+
+    {% block content %}
+    <section class="max-sm:text-sm">
+        <div class="contact-form flex max-sm:flex-col justify-center pt-20">
+            <form action="" class="p-4">
+                <h3>Get in touch with us</h3>
+                <input type="text" placeholder="Full name" data-name>
+                <input type="email" placeholder="E-mail address" data-email required>
+                <input type="email" placeholder="Subject" data-subject>
+                <textarea id="" cols="60" rows="60" placeholder="Message" data-text required></textarea>
+                <div>
+                    <button type="" id="contact-btn">Send</button>
+                </div>
+            </form>
+
+            <div class="conatct-in p-4">
+                <div>
+                    <h3>write us</h3>
+                    <a href="" class="contact-a">mydomail.com</a>
+                </div>
+                <div>
+                    <h3>call us</h3>
+                    <a class="contact-a" href="tel:+9779845145105">+977-9845145105</a>
+                </div>
+                <div>
+                    <h3>visit us</h3>
+                    <p class="address">Bharatpur-10,chitwan</p>
+                </div>
+                <div class="contact_icon">
+                    <h3>social links</h3>
+                    <div>
+                        <a href="#"><i style="font-size:24px" class="fa">&#xf099;</i></a>
+                        <a href="#"><i style="font-size:24px" class="fa">&#xf09a;</i></a>
+                        <a href="#"><i style="font-size:24px" class="fa">&#xf16d;</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    {% endblock %}
+
+    {% block javascript %}
+    <script>
+        var btn = document.getElementById('contact-btn')
+        btn.addEventListener('click', function (e) {
+            var elem = e.target
+            var data = elem.parentElement.parentElement
+
+            var name = data.querySelector("[data-name]").value
+            var email = data.querySelector("[data-email]").value
+            var subject = data.querySelector("[data-subject]").value
+            var message = data.querySelector("[data-text]").value
+            var body = 'name: ' + name + '<br/> email: ' + email + '<br/> subject: ' + subject + '<br/> message: ' + message
+
+            Email.send({
+                To: 'kshitizluv123@gmail.com',
+                From: 'labu_csit2077@lict.edu.np',
+                Subject: 'project contact',
+                Body: 'works',
+            }).then(
+                message => alert(message)
+            );
+        })
+
+        const dropbutton = document.querySelector('#user-menu-button');
+        dropbutton.addEventListener('click', function () {
+            const dropdown = document.querySelector('#user-dropdown');
+            if (dropdown.style.display === "none" || dropdown.style.display === "") {
+                dropdown.style.display = "block";
+            } else {
+                dropdown.style.display = "none";
+            }
+        });
+
+        function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    document.getElementById("hamburger").addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      if (hamm.style.display === "none" || hamm.style.display === "") {
+        hamm.style.display = "block";
+      } else {
+        hamm.style.display = "none";
+      }
+      event.stopPropagation(); // Prevent click from immediately bubbling to document
+    });
+
+    // Hide 'hamm' when clicking outside
+    document.addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      var clickedElement = event.target; // The element that was clicked
+
+      // Check if the clicked element is not the hamburger and not the hamm
+      if (!clickedElement.closest('#hamburger') && !clickedElement.closest('#hamm')) {
+        hamm.style.display = "none";
+      }
+    });
+
+    </script>
+    {% endblock %}

@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting</title>
+    <link rel="stylesheet" href="{% static './css/home.css' %}">
+</head>
+
+<body>
+
+    <div class="mt-20">
+        <div class="shadow m-auto flex w-1/2 items-center justify-center ">
+            {% if form == 'Name' %}
+            <form action="" method="post" class="flex flex-col p-20 gap-4">
+                <label for="">Change Name</label>
+                {% csrf_token %} 
+                <input type="hidden" name="id" value={{id}}> 
+                <input type="text" placeholder="First Name" name="firstname" class="px-4 py-2 border-2 border-violet-600" > 
+                <input type="text" placeholder="Last Name" name="lastname" class="px-4 py-2 border-2 border-violet-600" > 
+                <button type="submit" class="px-2 py-1 border-2 border-violet-600 rounded hover:bg-violet-600 hover:text-white active:bg-violet-800">Submit</button>
+            </form>
+            {% endif %}
+
+            {% if form == 'Profile' %}
+            <form action="" method="post" class="flex flex-col p-20 gap-4">
+                {% csrf_token %} 
+                <input type="hidden" name="id" value={{id}}>
+                <label for="">Change Profile Picture</label>
+                <label for="">Image:</label>
+                <input type="file" name="image">
+                <button type="submit" class="px-2 py-1 border-2 border-violet-600 rounded hover:bg-violet-600 hover:text-white active:bg-violet-800">Submit</button>
+            </form>
+            {% endif %}
+
+            {% if form == 'Email' %}
+            <form action="" method="post" class="flex flex-col p-20 gap-4">
+                {% csrf_token %} 
+                <input type="hidden" name="id" value={{id}}>
+                <label for="">Change Email</label>
+                <input type="email" placeholder="Email" name="email" class="px-4 py-2 border-2 border-violet-600" > 
+                <button type="submit" class="px-2 py-1 border-2 border-violet-600 rounded hover:bg-violet-600 hover:text-white active:bg-violet-800">Submit</button>
+            </form>
+            {% endif %}
+
+            {% if form == 'Password' %}
+            <form action="" method="post" class="flex flex-col p-20 gap-4">
+                {% csrf_token %} 
+                <input type="hidden" name="id" value={{id}}>
+                <label for="">Change Password</label>
+                <input type="password" placeholder="Old Password" name="current_password" class="px-4 py-2 border-2 border-violet-600">
+                <input type="password" placeholder="New Password" name="new_password" class="px-4 py-2 border-2 border-violet-600">
+                <input type="password" placeholder="Confirm Password" name="confirm_new_password" class="px-4 py-2 border-2 border-violet-600">
+                <button type="submit" class="px-2 py-1 border-2 border-violet-600 rounded hover:bg-violet-600 hover:text-white active:bg-violet-800">Submit</button>
+            </form>
+            {% endif %}
+
+            {% if form == 'Delete' %}
+            <form action="" method="post" class="flex flex-col p-20 gap-4">
+                {% csrf_token %} 
+                <input type="hidden" name="id" value={{id}}>
+                <label for="" class="text-2xl">Are you sure you want to delete account?</label>
+                <div class="flex justify-evenly">
+                    <button type="submit" class="px-4 py-1 border-2 border-red-600 rounded hover:bg-red-600 hover:text-white active:bg-red-800">Yes</button>
+                    <button type="submit" class="px-4 py-1 border-2 border-violet-600 rounded hover:bg-violet-600 hover:text-white active:bg-violet-800">No</button>
+                </div>
+            </form>
+            {% endif %}
+
+        </div>
+    </div>
+            
+
+
+
+</body>
+
+</html>

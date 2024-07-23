@@ -1,0 +1,73 @@
+{% extends 'home/cart.html' %}
+
+
+{% block all_content %}
+<section class="min-h-screen flex flex-col items-center max-sm:text-sm">
+    <div class="cartContainer mt-24">
+        {% if order %}
+        <div>
+            <table class="table-auto w-full shadow-lg">
+
+                <tr class="shadow-md hover:bg-yellow-400">
+                    <th class="text-center p-4 capitalize"><span class="text-indigo-800"> user</span></th>
+                    <th class="text-center p-4 capitalize"><span class="text-"> items</span></th>
+                    <th class="text-center p-4 capitalize"><span>order date</span></th>
+                    <th class="text-center p-4 capitalize"><span>is paid</span></th>
+                    <th class="text-center p-4 capitalize"><span>is complete</span></th>
+                    <th class="text-center p-4 capitalize"><span>total price</span></th>
+                </tr>
+
+                {% for order in order %}
+                <tr class="shadow hover:bg-green-300">
+                    <td class="font-bold text-center p-4">{{order.order.user.email}}</td>
+                    <td class="text-center p-4">{{order.food_item.Name}}</td>
+                    <td class="text-center p-4">{{order.order.order_date}}</td>
+                    {% if order.order.is_paid %}
+                    <td class="text-center p-4 text-green-500">&#10004;</td>
+                    {% else %}
+                    <td class="text-center p-4 text-red-500"><i class="material-icons">close</i></td>
+                    {% endif %}
+
+                    {% if order.order.is_complete %}
+                    <td class="text-center p-4 text-green-500">&#10004;</td>
+                    {% else %}
+                    <td class="text-center p-4 text-red-500"><i class="material-icons">close</i></td>
+                    {% endif %}
+                    <td class="text-center p-4">{{order.order.total_price}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        {% else %}
+        <p class="text-lg capitalize">{{noorder}}</p>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const dropbutton = document.querySelector('#user-menu-button');
+    dropbutton.addEventListener('click', function () {
+        const dropdown = document.querySelector('#user-dropdown');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    });
+
+    function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'home/cart.html' %}
+
+
+{% block all_content %}
+<section class="min-h-screen justify-center w-full flex my-20 space-x-4 max-sm:space-x-0 max-lg:flex-col  max-sm:text-sm">
+    <div class="w-full">
+        <p class="text-lg capitalize text-sky-500 text-center mb-6 font-bold max-sm:mt-10 max-sm:text-sm" >order details</p>
+
+        <table class="w-full shadow-lg max-sm:text-xs">
+
+            <tr class="shadow-md hover:bg-yellow-400">
+                <th class="text-center p-4 capitalize"><span class="text-indigo-800 max-sm:p-1 "> user</span></th>
+                <!-- <th class="text-center p-4 capitalize"><span class="text-"> items</span></th> -->
+                <th class="text-center p-4 capitalize max-sm:p-1 "><span>order date</span></th>
+                <th class="text-center p-4 capitalize max-sm:p-1 "><span>is paid</span></th>
+                <th class="text-center p-4 capitalize max-sm:p-1 " ><span>is complete</span></th>
+                <th class="text-center p-4 capitalize max-sm:p-1 "><span>total price</span></th>
+            </tr>
+
+            {% for order in order %}
+            <tr class="shadow hover:bg-green-300">
+                <td class="font-bold text-center p-4 max-sm:p-1">{{order.user.email}}</td>
+                <!-- <td class="text-center p-4 max-sm:p-1">
+                    
+                {% for order_item in order.orderitem_set.all %}
+                    {{ order_item.food_item.Name }}<br>
+                {% endfor %} 
+                </td> -->
+                <td class="text-center p-4 max-sm:p-3 ">{{order.order_date}}</td>
+                {% if order.is_paid %}
+                <td class="text-center p-4 max-sm:p-1 text-green-500">&#10004;</td>
+                {% else %}
+                <td class="text-center p-4 max-sm:p-1 text-red-500"><i class="material-icons">close</i></td>
+                {% endif %}
+
+                {% if order.is_complete %}
+                <td class="text-center p-4 max-sm:p-1 text-green-500">&#10004;</td>
+                {% else %}
+                <td class="text-center p-4 max-sm:p-1 text-red-500"><i class="material-icons">close</i></td>
+                {% endif %}
+                <td class="text-center p-4 max-sm:p-1">{{order.total_price}}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+    <div>
+        <p class="text-lg capitalize text-blue-600 font-bold text-center mb-6  max-sm:mt-10 max-sm:text-sm" >transaction</p>
+        <table class="table-auto w-full shadow-lg max-sm:text-xs">
+
+            <tr class="shadow-md hover:bg-yellow-400">
+                <th class="text-center p-4 capitalize max-sm:p-1 max-sm:text-wrap"><span class="text-indigo-800"> order</span></th>
+                <!-- <th class="text-center p-4 capitalize"><span class="text-"> items</span></th> -->
+                <th class="text-center p-4 capitalize max-sm:p-1 max-sm:text-wrap"><span>transaction id</span></th>
+                <th class="text-center p-4 capitalize max-sm:p-1 max-sm:text-wrap"><span>timestamp</span></th>
+                <th class="text-center p-4 capitalize max-sm:p-1 max-sm:text-wrap"><span> status</span></th>
+                <th class="text-center p-4 capitalize max-sm:p-1 max-sm:text-wrap"><span> amount</span></th>
+            </tr>
+
+            {% for transaction in transactions %}
+            <tr class="shadow hover:bg-green-300">
+                <td class="font-bold text-center p-4 max-sm:p-1">{{transaction.order.user.email}}</td>
+
+                <td class="text-center p-4 max-sm:p-1">{{transaction.transaction_id}}</td>
+                
+                <td class="text-center p-4 max-sm:p-1">{{transaction.timestamp}}</td>
+
+                <td class="text-center p-4 max-sm:p-1">{{transaction.status}}</td>
+
+                <td class="text-center p-4 max-sm:p-1">{{transaction.amount}}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const dropbutton = document.querySelector('#user-menu-button');
+  dropbutton.addEventListener('click', function () {
+    const dropdown = document.querySelector('#user-dropdown');
+    if (dropdown.style.display === "none" || dropdown.style.display === "") {
+      dropdown.style.display = "block";
+    } else {
+      dropdown.style.display = "none";
+    }
+  });
+
+  function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    document.getElementById("hamburger").addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      if (hamm.style.display === "none" || hamm.style.display === "") {
+        hamm.style.display = "block";
+      } else {
+        hamm.style.display = "none";
+      }
+      event.stopPropagation(); // Prevent click from immediately bubbling to document
+    });
+
+    // Hide 'hamm' when clicking outside
+    document.addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      var clickedElement = event.target; // The element that was clicked
+
+      // Check if the clicked element is not the hamburger and not the hamm
+      if (!clickedElement.closest('#hamburger') && !clickedElement.closest('#hamm')) {
+        hamm.style.display = "none";
+      }
+    });
+
+</script>
+{% endblock %}

@@ -1,0 +1,222 @@
+{% extends 'home/home.html' %}
+{% load static %}
+
+{% block nav %}
+<nav class="flex justify-evenly p-4 bg-transparent togglable nav-hover-dark max-sm:hidden">
+  {% endblock %}
+
+
+  {% block all_content %}
+  <section class="menuhead min-h-screen max-sm:text-sm">
+
+    <div class="text-2xl text-center uppercase p-5 mb-4">
+      <p>Menu</p>
+    </div>
+
+
+    <section class="mb-10 ">
+      <div style="display: flex;justify-content: space-around; width: 100%;">
+        <div style="display: flex; margin-left: 10px;">
+          <ul style="display: flex;" class="category">
+            <li class="mx-16 capitalize"><a href="{% url 'menu' %}" class="{% if request.resolver_match.url_name == 'menu' %}active{% endif %} ">all</a></li>
+            <li class="mx-16 capitalize"><a href="{% url 'filter' option='breakfast' %}" class="{% if category == 1 %}active{% endif %} ">breakfast</a></li>
+            <li class="mx-16 capitalize"><a href="{% url 'filter' option='lunch' %}" class="{% if category == 2 %}active{% endif %} " >lunch</a></li>
+            <li class="mx-16 capitalize"><a href="{% url 'filter' option='dinner' %}" class="{% if category == 3 %}active{% endif %} ">dinner</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div style="display: flex;">
+            <form action="{% url 'search' %}" method="get">
+            <input type="text" placeholder="Search" name="search" id="data-search">
+            <button type="submit" class="search px-5"><i class="fa fa-search "></i></button>
+          </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="wrapper mx-16">
+      <div class="grid grid-cols-2 mb-5 auto-cols-auto gap-6">
+        {% if foodcollection %}
+
+        {% for food in foodcollection %}
+        {% if food.active %}
+        <div class="flex gap-4">
+
+          <div class="w-1/3 basis-1/4 object-cover">
+            <a href="">
+            <img src="{{food.image.url}}" alt="" class="image">
+          </a>
+          </div>
+
+          <div class="flex flex-col basis-1/2">
+            <a href="{% url 'detail' food.id %}">
+            <h5 class="name">{{food.Name}}</h5>
+            <p>{{food.descriptions}}</p>
+          </a>
+          </div>
+
+          <div class="price basis-1/4">
+            <p class="pri">${{food.price}}</p>
+            <p class="red-500" style="display: none;">out of stock</p>
+
+            <form action="" method="post">
+              {%csrf_token%}
+              <a data-product-id={{food.id}} class="productId">Add</a>
+            </form>
+
+          </div>
+
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        {% else %}
+        <p class="text-lg capitalize">{{food}}</p>
+        {% endif %}
+      </div>
+    </div>
+
+  </section>
+  {% endblock %}
+
+  {% block javascript %}
+  <script>
+
+    document.querySelectorAll('.productId').forEach(item => {
+      item.addEventListener('click', click);
+    });
+
+
+    // GET
+    // function click(e){
+    //     var food_item_id = e.target.getAttribute("data-product-id");
+    //     var url = 'add_to_cart/?id=' + encodeURIComponent(food_item_id);
+
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open("GET", url, true);
+
+    //     xhr.onreadystatechange = function () {
+    //         if (xhr.readyState === 4 && xhr.status === 200) {
+    //             console.log("done");
+    //         } else if (xhr.readyState === 4 && xhr.status !== 200) {
+    //             console.error("Request failed with status: " + xhr.status);
+    //         }
+    //     };
+
+    //     xhr.send();
+    // }
+
+    
+    // POST AJAX
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    let csrf = document.querySelector('input[name=csrfmiddlewaretoken]').value
+
+    const csrftoken = csrf;
+    console.log(csrftoken);
+    function click(e) {
+
+      let x = e.clientX - e.target.offsetLeft
+      let y = e.clientY - e.target.offsetTop
+
+      let ripples = document.createElement('span')
+      ripples.classList.add('span')
+      ripples.style.left = x + 'px'
+      ripples.style.top = y + 'px'
+      this.appendChild(ripples)
+
+      setTimeout(() => {
+        ripples.remove()
+      }, 1000)
+
+      var ost = e.target.parentElement.parentElement.querySelector(".red-500");
+      var btn = e.target
+      console.log(btn)
+
+      var url = 'add_to_cart/'
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", url, true);
+      var data = {
+        'food_item_id': e.target.getAttribute("data-product-id"),
+      }
+
+      var jsonData = JSON.stringify(data)
+      xhr.setRequestHeader('X-CSRFToken', csrftoken)
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var responseData = JSON.parse(xhr.responseText);
+          var check = responseData['msg']
+          if (check == "out of stock") {
+            btn.style.display = "none"
+            ost.style.display = "block"
+            ost.style.color = "red"
+            console.log(responseData['msg'])
+          }
+        } else if (xhr.readyState === 4 && xhr.status !== 200) {
+          console.error("Request failed with status: " + xhr.status);
+        }
+      };
+
+      xhr.send(jsonData);
+    }
+
+    const dropbutton = document.querySelector('#user-menu-button');
+    dropbutton.addEventListener('click', function () {
+      const dropdown = document.querySelector('#user-dropdown');
+      if (dropdown.style.display === "none" || dropdown.style.display === "") {
+        dropdown.style.display = "block";
+      } else {
+        dropdown.style.display = "none";
+      }
+    });
+
+    function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    document.getElementById("hamburger").addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      if (hamm.style.display === "none" || hamm.style.display === "") {
+        hamm.style.display = "block";
+      } else {
+        hamm.style.display = "none";
+      }
+      event.stopPropagation(); // Prevent click from immediately bubbling to document
+    });
+
+    // Hide 'hamm' when clicking outside
+    document.addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      var clickedElement = event.target; // The element that was clicked
+
+      // Check if the clicked element is not the hamburger and not the hamm
+      if (!clickedElement.closest('#hamburger') && !clickedElement.closest('#hamm')) {
+        hamm.style.display = "none";
+      }
+    });
+
+  </script>
+  {% endblock %}

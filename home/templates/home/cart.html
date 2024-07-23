@@ -1,0 +1,352 @@
+{% extends 'home/home.html' %}
+{% load static %}
+{% block nav %}
+<nav class="flex justify-evenly p-4 bg-transparent togglable nav-hover-dark max-sm:hidden">
+  {% endblock %}
+
+  {% block all_content %}
+  <section class="cart-space mb-8 max-sm:text-sm">
+    <div class="cart-wrapper">
+      <div class="text-2xl uppercase p-5 mb-4 mt-16 text-center"><p>Cart</p></div>
+      <div class="cartItemContainer">
+        <div class="cart-title sm:w-8/12 flex w-full sm:m-auto">
+          <p class="basis-1/3">product</p>
+          <p class="basis-1/3 text-right" >quantity</p>
+          <p class="basis-1/3 text-right"> subtotal</p>
+        </div>
+
+        <div class="cartContainer w-full">
+
+          {% for item in cart_items %}
+          <div class="item flex  sm:w-8/12 m-auto mt-6 ">
+
+            <div class="cart-imag max-sm:basis-1/4 sm:basis-1/5  object-cover">
+              <img src="{{item.food_item.image.url}}" alt="" class="image">
+            </div>
+
+            <div class="description cart-descrip flex basis-1/3 max-sm:p-1 flex-col sm:basis-1/3 ">
+              <div class="sm:pl-8">
+                <h5 class="name font-bold max-sm:text-sm">{{item.food_item.Name}}</h5>
+              </div>
+              <div class="sm:pl-8">
+                <form method="post basis-1/4">
+                  {%csrf_token%}
+                  <a class="remove max-sm:text-sm" data-id="{{item.id}}" data-food-id="{{item.food_item.id}}">Remove</a>
+                </form>
+              </div>
+            </div>
+
+            <div class="cart-quan basis-1/6 sm:mx-14 sm:gap-4 sm:text-lg">
+              <form method="post">
+                {%csrf_token%}
+                <a data-sub="{{item.food_item.id}}">-</a>
+              </form>
+              <p type="number" class="cart-quantity" data-quantity="">{{item.quantity}}</p>
+              <form method="post">
+                {%csrf_token%}
+                <a data-add="{{item.food_item.id}}">+</a>
+              </form>
+
+            </div>
+
+          <div class="price basis-1/6" data-cost="{{item.food_item.price}}">
+              <p class="pri text-right">${{item.quantity_item}}</p>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+      
+      <div class="totalPrice flex justify-between w-8/12 m-auto mt-4">
+        <p class="font-bold">Total</p>
+        <p class="cart-total">${{cart.get_all_total}}</p>
+      </div>
+
+
+    <!-- Khalti Integration -->
+    <div class="w-10/12">
+        <a href="{% url 'khalti' %}" class="mt-8 border-2 border-yellow-300 bg-white px-6 py-2 hover:bg-yellow-400 hover:text-white float-right">Pay with Khalti </a>
+    </div>
+    </div>
+  </section>
+  {% endblock %}
+
+  {% block javascript %}
+  <script>
+
+    // *************************** USING AJAX ****************************** //
+
+    // document.querySelectorAll('.remove').forEach(item => {
+    // item.addEventListener('click', click);});
+
+    // let csrf = document.querySelector('input[name=csrfmiddlewaretoken]').value
+
+    // const csrftoken = csrf;
+    // console.log(csrftoken);
+    // function click(e) {
+    //   var ost = e.target.parentElement.parentElement.querySelector(".red-500");  // out of stock == ost
+    //   var btn = e.target
+    //   console.log(btn)
+
+    //   var url = 'add_to_cart/'
+
+    //   var xhr = new XMLHttpRequest();
+    //   xhr.open("POST", url, true);
+    //   var data = {
+    //     'food_item_id': e.target.getAttribute("data-product-id"),
+    //   }
+
+    //   var jsonData = JSON.stringify(data)
+    //   xhr.setRequestHeader('X-CSRFToken', csrftoken)
+
+    //   xhr.onreadystatechange = function () {
+    //     if (xhr.readyState === 4 && xhr.status === 200) {
+    //       var responseData = JSON.parse(xhr.responseText);
+    //       var check = responseData['msg']
+    //       if (check == "out of stock") {
+    //         btn.style.display = "none"
+    //         ost.style.display = "block"
+    //         ost.style.color = "red"
+    //         console.log(responseData['msg'])
+    //       }
+    //     } else if (xhr.readyState === 4 && xhr.status !== 200) {
+    //       console.error("Request failed with status: " + xhr.status);
+    //     }
+    //   };
+
+    //   xhr.send(jsonData);
+    // }
+
+
+    //*************** USING FETCH API **********************
+
+    // DELETE ORDER
+    document.querySelectorAll('.remove').forEach(item => {
+      item.addEventListener('click', async function click(e) {
+        var btn = e.target;
+        console.log(btn);
+
+        var url = '/delete_order';
+
+        let csrf = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+
+        var data = {
+          'item_id': btn.getAttribute("data-id"),
+          'food_item_id': btn.getAttribute("data-food-id"),
+        };
+
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrf
+            },
+            body: JSON.stringify(data)
+          });
+
+          if (response.ok) {
+            const responseData = await response.json();
+            var total = responseData['total']
+            var button = btn.parentElement.parentElement.parentElement
+            button.parentElement.remove()
+            console.log(button.parentElement)
+            calculateTotal();
+          } else {
+            console.error("Request failed with status: " + response.status);
+          }
+        } catch (error) {
+          console.error("Request failed: ", error);
+        }
+      });
+    });
+
+
+
+    // REMOVE ITEM
+    document.querySelectorAll('[data-sub]').forEach(item => {
+      item.addEventListener('click', async function click(e) {
+        var btn = e.target;
+        console.log(btn);
+
+        var url = '/delete_item';
+
+        let csrf = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+
+        var data = {
+          'food_item_id': btn.getAttribute("data-sub"),
+        };
+
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrf
+            },
+            body: JSON.stringify(data)
+          });
+
+          if (response.ok) {
+            const responseData = await response.json();
+            // response data
+            var check = responseData['msg']
+            let val = responseData['quantity']
+
+            // selecting elements
+            parent = btn.parentElement.parentElement;
+            price = parent.parentElement.querySelector('.pri')
+            let pri = parent.parentElement.querySelector('[data-cost]').getAttribute('data-cost')
+            // let pri = responseData['price']  // send through backend eachtime cost performance so use js
+            console.log(pri);
+      
+
+            parent.querySelector("[data-add]").style.display = 'inline';
+
+
+            // not needed for extra only for now
+            console.log(price.textContent.slice(1)) // textContent for extracting value inside a tag and slice to remove $ sign
+
+            parent.querySelector('.cart-quantity').innerText = val
+
+            total = parseInt(pri) * (parseInt(val))
+            price.innerText = '$' + total
+
+            console.log(total)
+
+            if (val == 0) {
+              btn.parentElement.parentElement.parentElement.remove()
+            }
+            console.log(check)
+            calculateTotal();
+          } else {
+            console.error("Request failed with status: " + response.status);
+          }
+        } catch (error) {
+          console.error("Request failed: ", error);
+        }
+      });
+    });
+
+
+    // ADD ORDER
+
+    document.querySelectorAll('[data-add]').forEach(item => {
+      item.addEventListener('click', async function click(e) {
+        var btn = e.target;
+        console.log(btn);
+
+        var url = '/updateitem';
+
+        let csrf = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+
+        var data = {
+          'food_item_id': btn.getAttribute("data-add"),
+        };
+
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrf
+            },
+            body: JSON.stringify(data)
+          });
+
+          if (response.ok) {
+            const responseData = await response.json();
+            var check = responseData['msg']
+            // let pri = responseData['price']
+            // btn.innerText='' 
+            if (check == "out of stock") {
+              btn.style.display = "none"
+              console.log(responseData['msg'])
+              return false
+            }
+            var val = responseData['quantity']
+            btn.parentElement.parentElement.querySelector('.cart-quantity').innerText = val
+            
+            // selecting elements
+            parent = btn.parentElement.parentElement;
+            price = parent.parentElement.querySelector('.pri')
+            let pri = parent.parentElement.querySelector('[data-cost]').getAttribute('data-cost')
+            total = parseInt(pri) * (parseInt(val))
+            price.innerText = '$' + total
+            console.log(price)
+            console.log('added')
+
+            calculateTotal();
+          } else {
+            console.error("Request failed with status: " + response.status);
+          }
+        } catch (error) {
+          console.error("Request failed: ", error);
+        }
+      });
+    });
+
+    function calculateTotal() {
+      let total = 0;
+      document.querySelectorAll('.item').forEach(item => {
+        total += parseFloat(item.querySelector('.pri').textContent.slice(1));
+      });
+      console.log(document.querySelector('.cart-total'))
+      document.querySelector('.cart-total').innerText ='$'+ total.toFixed(2); // Update total cost display
+    }
+    calculateTotal()
+
+    const dropbutton = document.querySelector('#user-menu-button');
+    dropbutton.addEventListener('click', function () {
+      const dropdown = document.querySelector('#user-dropdown');
+      if (dropdown.style.display === "none" || dropdown.style.display === "") {
+        dropdown.style.display = "block";
+      } else {
+        dropdown.style.display = "none";
+      }
+    });
+
+
+    function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+
+    document.getElementById("hamburger").addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      if (hamm.style.display === "none" || hamm.style.display === "") {
+        hamm.style.display = "block";
+      } else {
+        hamm.style.display = "none";
+      }
+      event.stopPropagation(); // Prevent click from immediately bubbling to document
+    });
+
+    // Hide 'hamm' when clicking outside
+    document.addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      var clickedElement = event.target; // The element that was clicked
+
+      // Check if the clicked element is not the hamburger and not the hamm
+      if (!clickedElement.closest('#hamburger') && !clickedElement.closest('#hamm')) {
+        hamm.style.display = "none";
+      }
+    });
+
+  </script>
+  {% endblock %}

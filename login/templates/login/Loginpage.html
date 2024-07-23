@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} login {% endblock %}</title>
+    <link rel="stylesheet" href="{% static '/css/login.css' %}">
+
+    <link rel="stylesheet" href="{% static './css/home.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="grid">
+            <div class="left">
+                <img src="{% static './imageCafe/pic.jpg' %}" alt="Cofee image">
+            </div>
+            <div class="right">
+                <div class="wrapper mb-16">
+                    <p class="text-2xl mb-2 space-up">Welcome Back</p>
+                    <p class="text-gray-500 mb-6 text-sm">Enter your account Id and password to view your profile</p>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div>
+                            <label for="">Email</label> <br>
+                            <input type="email" placeholder="Username" id="email" class="border-2 my-1" required
+                                name="email"><br>
+                            <label for="">Password</label><br>
+                            <input type="password" placeholder="Password" class="border-2 my-1" name="pass"
+                                id="password">
+                            <a href="#" class="text-sm text-blue-700">Forgot your password?</a>
+                            <button type="submit" class="font-bold animation">Login</button>
+                            <p class="my-2">OR</p>
+                            <p class="space">Create a new account.
+                                <a href="{% url 'Signup' %}" style="margin: 0;"><span class="text-blue-700">Sign
+                                        Up</span></a>
+                            </p>
+                        </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+  
+</body>
+
+</html>

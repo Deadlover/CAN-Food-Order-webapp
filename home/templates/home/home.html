@@ -1,0 +1,498 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAN</title>
+  <link rel="stylesheet" href="{% static './css/home.css' %}">
+  <link rel="stylesheet" href="{% static './css/index.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap"
+    rel="stylesheet">
+
+</head>
+
+<body class="w-full">
+  <!-- Navbar -->
+  {% block nav %}
+  <nav class="flex justify-evenly p-4 bg-transparent max-sm:hidden">
+    {% endblock %}
+    <ul class="flex">
+      <li class="mx-10 capitalize "><a href="{% url 'Home' %}"
+          class="nav-hover {% if request.resolver_match.url_name == 'Home' %}active{% endif %}">home</a></li>
+      {% if user.is_superuser %}
+      <li class="mx-10 capitalize "><a href="{% url 'upload' %}"
+          class="nav-hover {% if request.resolver_match.url_name == 'upload' %}active{% endif %}">upload</a></li>
+      <li class="mx-10 capitalize "><a href="{% url 'editmenu' %}"
+          class="nav-hover {% if request.resolver_match.url_name == 'editmenu' %}active{% endif %} ">edit menu</a></li>
+      <li class="mx-10 capitalize "><a href="{% url 'Customer_review' %}"
+          class="nav-hover {% if request.resolver_match.url_name == 'Customer_review' %}active{% endif %} ">Customer
+          review</a></li>
+      <li class="mx-10 capitalize "><a href="{% url 'orderhistory' %}"
+          class="nav-hover {% if request.resolver_match.url_name == 'orderhistory' %}active{% endif %} ">order history
+        </a></li>
+      {% else %}
+      <li class="mx-10 capitalize "><a href="{% url 'menu' %}"
+          class="nav-hover {% if request.resolver_match.url_name == 'menu' %}active{% endif %}">menu</a></li>
+      <li class="mx-10 capitalize "><a href="{% url 'contact' %}"
+          class="nav-hover {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">contact</a></li>
+      {% endif %}
+    </ul>
+    {% if user.is_authenticated %}
+
+    <a class="nav-hover icon {% if request.resolver_match.url_name == 'cart' %}active{% endif %}"
+      href="{% url 'cart' %}">
+      <i class="material-icons cart-icons">&#xe547;</i>
+      <p class="cart-notify">{{total}}</p>
+      Cart
+    </a>
+
+    <!-- profile navbar -->
+    <div class="flex relative">
+      <button type="button"
+        class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+        id="user-menu-button">
+        <span class="sr-only">Open user menu</span>
+        <img class="w-8 h-8 rounded-full" src="{{user.profile_picture.url}}" alt="user photo">
+      </button>
+      <!-- Dropdown menu -->
+      <div class="z-50 absolute hidden right-0 top-10 
+         bg-white divide-y divide-gray-100 rounded-lg shadow
+         dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+        <div class="px-4 py-3">
+          <span class="block text-sm text-gray-900 dark:text-white">{{user.first_name}} {{user.last_name}}</span>
+          <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">{{user.email}}</span>
+        </div>
+        <ul class="py-2">
+          <li>
+            <a href="{% url 'order' %}" class="block px-4 py-2 text-sm text-white hover:bg-gray-600 ">Order</a>
+          </li>
+          <li>
+            <a onclick="openmenu()"
+              class="block px-4 py-2 text-sm text-white  hover:bg-gray-600 w-full cursor-pointer ">Settings</a>
+            <ul class="text-white z-50 absolute -right-40 top-10 hidden
+               rounded-lg shadow bg-gray-800" id="setting-menu">
+              <li><a href="{% url 'UserSetting' 'Name' %}"
+                  class="block px-4 py-2 text-sm text-white hover:bg-gray-600 ">Change name</a></li>
+              <li><a href="{% url 'UserSetting' 'Profile' %}"
+                  class="block px-4 py-2 text-sm text-white hover:bg-gray-600 ">Change Profile Picture</a></li>
+              <li><a href="{% url 'UserSetting' 'Email' %}"
+                  class="block px-4 py-2 text-sm text-white hover:bg-gray-600 ">Change Email</a></li>
+              <li><a href="{% url 'UserSetting' 'Password' %}"
+                  class="block px-4 py-2 text-sm text-white hover:bg-gray-600 ">Change Password</a></li>
+              <li><a href="{% url 'UserSetting' 'Delete' %}"
+                  class="block px-4 py-2 text-sm text-white hover:bg-gray-600 ">Delete Account</a></li>
+            </ul>
+          </li>
+          <!-- <li>
+            <a href="#"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</a>
+          </li> -->
+          <li>
+            {% else %}
+            <a href="{% url 'Loginpage' %}" class="block px-4 py-2 text-sm text-white  hover:bg-gray-600 ">
+              Login</a>
+            {% endif %}
+            <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-white  hover:bg-gray-600 ">Sign
+              out</a>
+
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <hr>
+  </nav>
+
+  <!-- for Phone -->
+  <nav class="flex  p-4 bg-transparent sm:hidden">
+    <div class="flex justify-between w-full text-yellow-500">
+      <div id="hamburger">
+        <i class="fa fa-bars" style="font-size:20px;"></i>
+        <!-- <p class="">☰</p> -->
+      </div>
+      <div> <a class=" {% if request.resolver_match.url_name == 'cart' %}active{% endif %}" href="{% url 'cart' %}">
+          <i class="material-icons " style="font-size:25px;">&#xe547;</i>
+        </a></div>
+    </div>
+  </nav>
+
+
+  <nav class="text-black  w-1/2 text-sm hidden" id="hamm">
+    <div class="overflow-y-auto p-2 h-screen bg-white w-full">
+      <ul class="flex flex-col space-y-4 mt-2">
+        <li class=" capitalize "><a href="{% url 'Home' %}"
+            class="nav-hover {% if request.resolver_match.url_name == 'Home' %}active{% endif %}">home</a></li>
+        {% if user.is_superuser %}
+        <li class=" capitalize "><a href="{% url 'upload' %}"
+            class="nav-hover {% if request.resolver_match.url_name == 'upload' %}active{% endif %}">upload</a></li>
+        <li class=" capitalize "><a href="{% url 'editmenu' %}"
+            class="nav-hover {% if request.resolver_match.url_name == 'editmenu' %}active{% endif %} ">edit menu</a>
+        </li>
+        <li class=" capitalize "><a href="{% url 'Customer_review' %}"
+            class="nav-hover {% if request.resolver_match.url_name == 'Customer_review' %}active{% endif %} ">Customer
+            review</a></li>
+        <li class=" capitalize "><a href="{% url 'orderhistory' %}"
+            class="nav-hover {% if request.resolver_match.url_name == 'orderhistory' %}active{% endif %} ">order history
+          </a></li>
+        {% else %}
+        <li class=" capitalize "><a href="{% url 'menu' %}"
+            class="nav-hover {% if request.resolver_match.url_name == 'menu' %}active{% endif %}">menu</a></li>
+        <li class=" capitalize "><a href="{% url 'contact' %}"
+            class="nav-hover {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">contact</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- main -->
+  {% block all_content %}
+
+  <!-- HERO SECTION -->
+  <header class="w-full max-sm:text-sm">
+    <hero class=" w-full block">
+      {% block img %}
+      <div class="back w-full h-full before:w-full before:h-full"></div>
+      {% endblock %}
+      <div class="container ">
+        <p class="text-white text-center"> <span class="text-yellow-500">CAFÉ</span> / RESTAURANT</p>
+        <h1 class="text-white text-center ">Touché</h1>
+        <p class="text-white text-center">A unique café located in the heart of Los Angeles.
+          Always fresh coffee and <br> biscuits.
+          Open for indoor dining and to-go orders.
+        </p>
+        <a href="{% url 'menu' %}" class="capitalize text-white m-auto btn ">check menu</a>
+      </div>
+      <div class="icon">
+        <div>
+          <a href="#"><i style="font-size:24px" class="fa">&#xf099;</i></a>
+          <a href="#"><i style="font-size:24px" class="fa">&#xf09a;</i></a>
+          <a href="#"><i style="font-size:24px" class="fa">&#xf16d;</i></a>
+        </div>
+      </div>
+    </hero>
+  </header>
+
+
+  {% block content %}
+  <section class="sm:pt-28 max-sm:text-sm">
+    <div class="wrapper mx-auto">
+      <div class="flex max-sm:flex-col flex-row max-sm:gap-5">
+
+        <div class="basis-1/6 max-sm:basis-full">
+          <hr class="bar-effect">
+
+          <p>Take a coffee break or enjoy a meal.</p>
+        </div>
+
+        <div class="basis-2/6 col-two max-sm:basis-full">
+          <div class="contain max-sm:w-full flex max-sm:flex-col max-sm:items-center">
+            <img src="{% static '/imageCafe/2.jpg' %}" alt="coffee image">
+
+            <div class="border-ring max-sm:hidden"></div>
+          </div>
+        </div>
+
+        <div class="basis-1/2 max-sm:basis-full">
+          <h2> <em>Always</em> amazing experience</h2>
+
+          <p class="sm:w-10/12 text-justify">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            Molestias veritatis nisi, consequatur, laborum libero a neque ducimus.
+            Porro rem illum quo nostrum quisquam asperiores. Possimus facilis velit, voluptatibus!
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="pt-28 max-sm:text-sm">
+    <div class="wrapper mx-auto">
+      <div class="flex max-sm:flex-col-reverse flex-row max-sm:gap-3">
+
+        <div class=" basis-1/2 max-sm:basis-full">
+          <h2> <em>Beautiful</em> outdoor seating</h2>
+
+          <p class="sm:w-10/12 text-justify max-sm:text-justify ">Lorem ipsum dolor sit amet, consectetur adipisicing
+            elit.
+            Molestias veritatis nisi, consequatur, laborum libero a neque ducimus.
+            Porro rem illum quo nostrum quisquam asperiores. Possimus facilis velit, voluptatibus!
+          </p>
+        </div>
+
+        <div class=" basis-1/6 sm:place-self-end max-sm:basis-full">
+          <hr class="bar-effect">
+
+          <p>Great variety of foods you will enjoy.</p>
+        </div>
+
+        <div class="col-two basis-2/6 max-sm:basis-full">
+          <div class="contain max-sm:w-full flex max-sm:flex-col max-sm:items-center">
+            <img src="{% static '/imageCafe/7.jpg' %}" alt="coffee image">
+
+            <div class="border-ring max-sm:hidden"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="div max-sm:text-sm">
+    <div class="img">
+      <div class="color-gradient">
+        <div class="img-content sm:ml-20">
+          <hr class="bar-effect">
+
+          <p class="sm:w-1/3">Enjoy our specialty coffees and award winning doughnuts in a friendly atmospher</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <section class="max-sm:text-sm" id="menu">
+    <div class="text-2xl text-center uppercase p-5">
+      <p>Items</p>
+    </div>
+    <!-- menu item-->
+    <div class="wrapper mx-16">
+      <div class="grid grid-cols-2 mb-5 auto-cols-auto gap-6">
+        {% for food in foodcollection %}
+        <div class="flex gap-4">
+
+          <div class="w-1/3 basis-1/4 object-cover">
+            <img src="{{food.image.url}}" alt="">
+          </div>
+
+          <div class="flex flex-col basis-1/2">
+            <h5 class="capitalize font-medium">{{food.Name}}</h5>
+            <p>{{food.descriptions}}</p>
+          </div>
+
+          <div class="price basis-1/4">${{food.price}}</div>
+        </div>
+        {% endfor %}
+
+        <div class="flex gap-4">
+
+          <div class="w-1/3 basis-1/4 object-cover">
+            <img src="{% static '/imageCafe/26.jpg' %}" alt="">
+          </div>
+
+          <div class=" flex flex-col basis-1/2">
+            <h5 class="font-medium">Lorem ipsum, dolor Lorem</h5>
+            <p>ipsum dolor. Lorem ipsum dolor sit amet.</p>
+          </div>
+
+          <div class="price basis-1/4">$15</div>
+        </div>
+
+        <div class="flex gap-4">
+
+          <div class="w-1/3 basis-1/4">
+            <img src="{% static '/imageCafe/26.jpg' %}" alt="">
+          </div>
+
+          <div class=" flex flex-col basis-1/2">
+            <h5 class="font-medium">Lorem ipsum, dolor Lorem</h5>
+            <p>ipsum dolor. Lorem ipsum dolor sit amet.</p>
+          </div>
+
+          <div class="price basis-1/4">$15</div>
+        </div>
+
+        <div class="flex gap-4">
+
+          <div class="w-1/3 basis-1/4">
+            <img src="{% static '/imageCafe/26.jpg' %}" alt="">
+          </div>
+
+          <div class=" flex flex-col basis-1/2">
+            <h5 class="font-medium">Lorem ipsum, dolor Lorem</h5>
+            <p>ipsum dolor. Lorem ipsum dolor sit amet.</p>
+          </div>
+
+          <div class="price basis-1/4">$15</div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- gallery -->
+  <section>
+    <div class="m-1 max-sm:text-sm">
+      <hr class="bar-effect">
+      <p class="pl-1">Our gallery</p>
+      <p class="pl-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+    </div>
+    <div class="grid grid-cols-3 gap-4 mb-5 auto-cols-auto">
+      <!-- 1st column -->
+      <div class="flex flex-col gap-3">
+        <div>
+          <img src="{% static '/imageCafe/11.jpg' %}" alt="">
+        </div>
+
+        <div>
+          <img src="{% static '/imageCafe/15.jpg' %}" alt="">
+        </div>
+        <div>
+          <img src="{% static '/imageCafe/18.jpg' %}" alt="">
+        </div>
+      </div>
+      <!-- 2nd column -->
+      <div class="flex flex-col gap-3">
+        <div>
+          <img src="{% static '/imageCafe/16.jpg' %}" alt="">
+        </div>
+        <div>
+          <img src="{% static '/imageCafe/14.jpg' %}" alt="">
+        </div>
+      </div>
+      <!-- 3rd column -->
+      <div class="flex flex-col gap-3">
+        <div>
+          <img src="{% static '/imageCafe/13.jpg' %}" alt="">
+        </div>
+        <div>
+          <img src="{% static '/imageCafe/17.jpg' %}" alt="">
+        </div>
+        <div>
+          <img src="{% static 'imageCafe/12.jpg' %}" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endblock %}
+  {% endblock %}
+
+  <!-- footer -->
+  <footer class=" w-full sm:p-20 p-8 max-sm:text-sm">
+    <div class="footer-wrapper ">
+      <div class="footer-about max-sm:flex-col w-full gap-4">
+
+        <div class="foot-about">
+
+          <h5 class="foot-font foot-h5 text-lime-400">about us</h5>
+
+          <p class="text-wrap text-justify">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat
+            culpa dignissimos, voluptas commodi porro odio laborum </p>
+
+        </div>
+
+        <div class="foot-location">
+
+          <h5 class="foot-font foot-h5">Contact info</h5>
+
+          <ul>
+            <li class="icon">
+              <i class="material-icons foot-icon">&#xe55f;</i>
+              &nbsp; &nbsp;&nbsp; &nbsp;Bharatpur-10,chitwan
+            </li>
+
+            <li class="icon"><i class="material-icons foot-icon">&#xe0b0;</i>&nbsp;
+              &nbsp;&nbsp;&nbsp;
+              +9779812250918</li>
+
+            <li class="icon mail-hover"><a href="mailto:admin@domain.com">
+                <i class="material-icons foot-icon">&#xe0be;</i>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                admin@domain.com</a></li>
+
+          </ul>
+
+        </div>
+
+        <div>
+          <!-- Heading -->
+          <h5 class="foot-font foot-h5">
+            Opening hours
+          </h5>
+
+          <!-- Text -->
+          <div class="">
+            <div class="foot-font">Monday - Thursday</div>
+            <div class="foot-time mb-5">10:00 AM - 11:00 PM</div>
+          </div>
+
+          <!-- Text -->
+          <div class="">
+            <div class="foot-font">Friday - Sunday</div>
+            <div class="foot-time">12:00 AM - 03:00 AM</div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="copyright">
+        <p>© 2021 Touché. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  {% block javascript %}
+  <script>
+    const navbar = document.querySelector("nav")
+    window.onscroll = () => {
+      if (window.scrollY > 30) {
+        navbar.classList.add("togglable")
+        navbar.classList.add("nav-hover-dark")
+      } else {
+        navbar.classList.remove("togglable")
+        navbar.classList.remove("nav-hover-dark")
+      }
+    }
+
+    const dropbutton = document.querySelector('#user-menu-button');
+    dropbutton.addEventListener('click', function () {
+      const dropdown = document.querySelector('#user-dropdown');
+      if (dropdown.style.display === "none" || dropdown.style.display === "") {
+        dropdown.style.display = "block";
+      } else {
+        dropdown.style.display = "none";
+      }
+    });
+
+    function openmenu() {
+      const dropdown = document.querySelector('#setting-menu');
+      if (dropdown.style.display === "none" || dropdown.style.display === "") {
+        dropdown.style.display = "block";
+      } else {
+        dropdown.style.display = "none";
+      }
+    }
+
+    // for phone nav
+    document.getElementById("hamburger").addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      if (hamm.style.display === "none" || hamm.style.display === "") {
+        hamm.style.display = "block";
+      } else {
+        hamm.style.display = "none";
+      }
+      event.stopPropagation(); // Prevent click from immediately bubbling to document
+    });
+
+    // Hide 'hamm' when clicking outside
+    document.addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      var clickedElement = event.target; // The element that was clicked
+
+      // Check if the clicked element is not the hamburger and not the hamm
+      if (!clickedElement.closest('#hamburger') && !clickedElement.closest('#hamm')) {
+        hamm.style.display = "none";
+      }
+    });
+
+  </script>
+  {% endblock %}
+</body>
+
+</html>

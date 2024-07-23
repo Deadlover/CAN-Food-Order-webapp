@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp</title>
+    <link rel="stylesheet" href="{% static './css/home.css' %}">
+
+    <link rel="stylesheet" href="{% static './css/sign.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="grid">
+            <div class="left">
+                <img src="{% static './imageCafe/pic.jpg' %}" alt="Cofee image">
+            </div>
+            <div class="right">
+                <div class="wrapper mb-16">
+                    <h1 class="text-2xl mb-8 text-left">Create An Account</h1>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="input-wrapper">
+                            <div>
+                                <label for="fname">First name</label> <br>
+                                <input type="text" placeholder="first name" class="mt-1 border-2" name="fname">
+                                
+                            </div>
+                            
+                            <div>    
+                                <label for="">Last name</label> <br>
+                                <input type="text" placeholder="last name" class="mt-1 border-2"  name="lname">
+                            </div>
+
+                            <div>
+                                <label for="">Email</label> 
+                                <input type="email" placeholder="Email" class="mt-1 border-2"  name="email">
+                            </div>
+                            
+                            <div> 
+                                <label for="">Address</label> 
+                                <input type="text" placeholder="Address" class="mt-1 border-2"  name="add">
+                            </div>
+
+                            <div>
+                                <label for="">Password</label>
+                                <input type="password" placeholder="Password" class="mt-1 border-2" name="pass1">
+                            </div>
+                            
+                            <div>
+                                <label for="">Confirm Password</label>
+                                <input type="password" placeholder="Retype-Password" class="mt-1 border-2" name="pass2">
+                            </div>
+                            <div>
+                                <button type="submit" class="font-bold animation">SignUp</button>
+                                <p class="my-2">OR</p>
+                                <p class="space">Already have an account.
+                                <a href="{% url 'Loginpage' %}" style="margin: 0;"><span class="text-blue-700">login</span></a>
+                                </p>
+                            </div>
+                        </div>
+        
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

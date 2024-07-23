@@ -1,0 +1,83 @@
+{% extends 'home/home.html' %}
+ 
+{% block nav %}
+<nav class="flex justify-evenly p-4 bg-transparent togglable nav-hover-dark max-sm:hidden">
+{% endblock %}
+
+{% block all_content %}
+
+<div class="form cart-space max-sm:text-sm">
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <table class="">
+    {% if insert %}
+        {% for field in insert %}
+    <tr>
+        <th>{{ field.label }}</th>
+        <td>{{ field }}</td>
+    </tr>
+    {% endfor %}
+
+    {% else %}
+        {% for field in category %}
+        <tr>
+            <th>{{ field.label }}</th>
+            <td>{{ field }}</td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+
+    </table>
+    <div class="form-btn">
+        <button type="submit">Upload</button>
+    </div>
+</form>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const dropbutton = document.querySelector('#user-menu-button');
+  dropbutton.addEventListener('click', function () {
+    const dropdown = document.querySelector('#user-dropdown');
+    if (dropdown.style.display === "none" || dropdown.style.display === "") {
+      dropdown.style.display = "block";
+    } else {
+      dropdown.style.display = "none";
+    }
+  });
+
+  function openmenu() {
+        const dropdown = document.querySelector('#setting-menu');
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    document.getElementById("hamburger").addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      if (hamm.style.display === "none" || hamm.style.display === "") {
+        hamm.style.display = "block";
+      } else {
+        hamm.style.display = "none";
+      }
+      event.stopPropagation(); // Prevent click from immediately bubbling to document
+    });
+
+    // Hide 'hamm' when clicking outside
+    document.addEventListener('click', function (event) {
+      var hamm = document.getElementById('hamm');
+      var clickedElement = event.target; // The element that was clicked
+
+      // Check if the clicked element is not the hamburger and not the hamm
+      if (!clickedElement.closest('#hamburger') && !clickedElement.closest('#hamm')) {
+        hamm.style.display = "none";
+      }
+    });
+
+</script>
+{% endblock %}

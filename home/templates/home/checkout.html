@@ -1,0 +1,80 @@
+{% extends 'home/home.html' %}
+{% load static %}
+{% block nav %}
+<nav class="flex justify-evenly p-4 bg-transparent togglable nav-hover-dark max-sm:hidden">
+  {% endblock %}
+{% block all_content %}
+
+<section class="min-h-screen flex flex-col items-center ">
+
+
+
+<div class="cartContainer mt-24">
+
+    {% for item in cart_product %}
+    <div class="item">
+
+      <div class="cart-imag">
+        <img src="{{item.food_item.image.url}}" alt="" class="image">
+      </div>
+
+      <div class="description cart-descrip">
+        <div>
+          <h5 class="name font-bold">{{item.food_item.Name}}</h5>
+        </div>
+      </div>
+
+      <div class="cart-quan">
+        <p type="number" class="cart-quantity" data-quantity="">{{item.quantity}}</p>
+      </div>
+
+    <div class="price" data-cost="{{item.food_item.price}}">
+        <p class="pri ">${{item.quantity_item}}</p>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+<!-- Esewa Integration -->
+<div class="mt-8 capitalize flow-root ">
+  <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
+    <input type="text" id="amount" name="amount" value="{{amount}}" required>
+    <input type="text" id="tax_amount" name="tax_amount" value ="0" required>
+    <input type="text" id="total_amount" name="total_amount" value="{{total_amount}}" required>
+    <input type="text" id="transaction_uuid" name="transaction_uuid" value="{{uuid}}" required>
+    <input type="text" id="product_code" name="product_code" value ="EPAYTEST" required>
+    <input type="text" id="product_service_charge" name="product_service_charge" value="0" required>
+    <input type="text" id="product_delivery_charge" name="product_delivery_charge" value="0" required>
+    <input type="text" id="success_url" name="success_url" value="https://esewa.com.np" required>
+    <input type="text" id="failure_url" name="failure_url" value="https://google.com" required>
+    <input type="text" id="signed_field_names" name="Signed_field_names" value="total_amount,transaction_uuid,product_code" required>
+    <input type="text" id="signature" name="signature" value="{{signature}}" required>
+    <input value="Submit" type="submit" class="border-2 border-yellow-300 bg-white px-6 py-2 hover:bg-yellow-400 hover:text-white float-right">
+  </form>
+</div>
+
+
+<!-- Khalti Integration -->
+<div>
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="text" id="amount" name="amount" value="{{amount}}" required>
+    <input type="text" id="transaction_uuid" name="transaction_uuid" value="{{uuid}}" required>
+    <input type="text" id="failure_url" name="failure_url" value="https://google.com" required>
+    <input value="Submit" type="submit" class="border-2 border-yellow-300 bg-white px-6 py-2 hover:bg-yellow-400 hover:text-white float-right">
+  </form>
+</div>
+
+
+
+</section>
+{% endblock %}
+
+
+
+{% block javascript %}
+
+
+
+
+{% endblock %}
